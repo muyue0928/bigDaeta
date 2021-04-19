@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,18 +8,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>    
-    <style>
-        .header{
-            display: flex;
-            justify-content: center;
-            width: 1200px;
-        }
-        .header-right{
-            display: flex;
-            justify-content: center;
 
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -29,7 +18,7 @@
             </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-            <li class="nav-item ">
+            <li class="nav-item active">
                 <a class="nav-link" href="nearest.html">最近測站數據</a>
             </li>
             <li class="nav-item">
@@ -41,38 +30,19 @@
             </ul>
         </div>
     </nav>
-    <div class="alSta" id="alSta">
-
-    </div>
     <script>
-        const result = document.querySelector('.result');
-        function reqOnload () {
-            const data = JSON.parse(this.responseText);
-            let st = "";
-            st += '共84筆資料\n';
-            console.log(data.records[1].County);
-            for(let i = 0; i < 84; i++){
-            // console.log('第'+toString(i+1)+'筆資料\n');
-                st += '第'+(i+1)+'筆資料\n';
-                st += '測站所在縣市：'+data.records[i].County+'\n測站名稱：'+data.records[i].SiteName+'\n測站所測得AQI：'+data.records[i].AQI+'\n測站所在經度：'+data.records[i].Longitude+'\n測站所在緯度：'+data.records[i].Latitude+'\n\n';
-                alSta.innerText = st;
+        function getLocation() {//取得 經緯度
+            if (navigator.geolocation) {//
+                navigator.geolocation.getCurrentPosition(showPosition);//有拿到位置就呼叫 showPosition 函式
+            } 
+            else {
+                m.innerHTML = "您的瀏覽器不支援 顯示地理位置 API ，請使用其它瀏覽器開啟 這個網址";
             }
         }
-        function reqError (err) {
-        console.log('錯誤', err)
+        getLocation();
+        function showPosition(){
+            
         }
-        // 宣告一個 XHR 的物件
-        var request = new XMLHttpRequest(); 
-        // 定義連線方式
-        request.open('get', 'https://data.epa.gov.tw/api/v1/aqx_p_432?api_key=9be7b239-557b-4c10-9775-78cadfc555e9&limit=1000&format=json', true);
-        // 送出請求
-        request.send();
-        // 如果成功就執行 reqOnload()
-        request.onload = reqOnload; 
-        // 失敗就 reqError()
-        request.onerror = reqError;
     </script>
-
-
 </body>
 </html>
