@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>空氣品質查詢</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>    
 
@@ -25,44 +25,44 @@
                 <a class="nav-link" href="select.html">特定測站查詢</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">資料來源</a>
+                <a class="nav-link" href="data.html">其他資料</a>
             </li>
             </ul>
         </div>
     </nav>
+    <div id="m"></div>
     <div id="result"></div>
-    <input type="hidden" id="lati">
-    <input type="hidden" id="long">
-    <script>	
-        let lati = document.getElementById('lati');
-        let long = document.getElementById('long');
-        let result = document.getElementById('result');
-
+    <script>
+        var lon = 0;
+        var lat = 0;
+        let result = document.getElementById("result");
+        function getLocation() {//取得 經緯度
+            if (navigator.geolocation) {//
+                navigator.geolocation.getCurrentPosition(showPosition);//有拿到位置就呼叫 showPosition 函式
+            } 
+            else {
+                m.innerHTML = "您的瀏覽器不支援 顯示地理位置 API ，請使用其它瀏覽器開啟 這個網址";
+            }
+        }
+        getLocation();
+        function showPosition(position){
+            m.innerText ='所在經度：'+position.coords.longitude+"\n所在緯度："+position.coords.latitude;
+            lon = position.coords.longitude*10000;
+            lat = position.coords.latitude*10000;
+        }
         function reqOnload () {
             const data = JSON.parse(this.responseText);
-            let minL = 1000000000;
+            let minV = 10000000000000000;
             let minN = 0;
-            navigator.geolocation.getCurrentPosition(getPosition, error);
-            function getPosition(position) {
-                let lat=position.coords.latitude;
-                let lon=position.coords.longitude;
-                result.innerText = '現在經度'+lat+'\n現在緯度'+lon;
-                for(let i=0;i<84;i++){
-                    let latS = data.records[i].Latitude;
-                    let lonS = data.records[i].Longitude;
-                    
-                    Math.sqrt((lat-latS)*(lat-latS)+(lon-lonS)*(lon-lonS))
-                    if(Math.sqrt((lat-latS)*(lat-latS)+(lon-lonS)*(lon-lonS))<minL){
-                        minN = i;
-                        minL = Math.sqrt((lat-latS)*(lat-latS)+(lon-lonS)*(lon-lonS));
-                    }
+            for(let i = 0;i<84;i++){
+                let datLon = data.records[i].Longitude*10000;
+                let datLat = data.records[i].Latitude*10000;
+                if(Math.sqrt((datLon-lon)*(datLon-lon)+(datLat-lat)*(datLat-lat))<minV){
+                    minV = Math.sqrt((datLon-lon)*(datLon-lon)+(datLat-lat)*(datLat-lat));
+                    minN = i;
                 }
-                let i = minN;
-                result.innerText += '\n\n' + '測站所在縣市：'+data.records[i].County+'\n測站名稱：'+data.records[i].SiteName+'\n測站所測得AQI：'+data.records[i].AQI+'\n測站所在經度：'+data.records[i].Longitude+'\n測站所在緯度：'+data.records[i].Latitude+'\n\n'
             }
-            function error(error) {
-                console.log(error)
-            }
+            result.innerText = '測站所在縣市：'+data.records[minN].County+'\n測站名稱：'+data.records[minN].SiteName+'\n測站所測得AQI：'+data.records[minN].AQI+'\n測站所在經度：'+data.records[minN].Longitude+'\n測站所在緯度：'+data.records[minN].Latitude+'\n\n'
 
         }
         function reqError (err) {
@@ -78,14 +78,6 @@
         request.onload = reqOnload; 
         // 失敗就 reqError()
         request.onerror = reqError;
-
-                
-
-
-
-
-
-       
     </script>
 </body>
 </html>
