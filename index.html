@@ -71,6 +71,16 @@
         request.onload = reqOnload; 
         // 失敗就 reqError()
         request.onerror = reqError;
+
+        function getLocation() {//取得 經緯度
+            if (navigator.geolocation) {//
+                navigator.geolocation.getCurrentPosition(showPosition);//有拿到位置就呼叫 showPosition 函式
+            } 
+            else {
+                alert("您的瀏覽器不支援 顯示地理位置 API ，請使用其它瀏覽器開啟這個網址");
+            }
+        }
+        getLocation();
     </script>
 
 

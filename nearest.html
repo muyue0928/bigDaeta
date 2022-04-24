@@ -30,6 +30,8 @@
             </ul>
         </div>
     </nav>
+    <div>進網頁後請稍待10秒資料傳輸喔:D</div>
+    <br>
     <div id="m"></div>
     <div id="result"></div>
     <script>
@@ -41,15 +43,16 @@
                 navigator.geolocation.getCurrentPosition(showPosition);//有拿到位置就呼叫 showPosition 函式
             } 
             else {
-                m.innerHTML = "您的瀏覽器不支援 顯示地理位置 API ，請使用其它瀏覽器開啟 這個網址";
+                m.innerHTML = "您的瀏覽器不支援 顯示地理位置 API ，請使用其它瀏覽器開啟這個網址";
             }
         }
-        getLocation();
         function showPosition(position){
             m.innerText ='所在經度：'+position.coords.longitude+"\n所在緯度："+position.coords.latitude;
             lon = position.coords.longitude*10000;
             lat = position.coords.latitude*10000;
         }
+        getLocation();
+
         function reqOnload () {
             const data = JSON.parse(this.responseText);
             let minV = 10000000000000000;
@@ -68,6 +71,7 @@
         function reqError (err) {
         console.log('錯誤', err)
         }
+
         // 宣告一個 XHR 的物件
         var request = new XMLHttpRequest(); 
         // 定義連線方式
@@ -78,6 +82,19 @@
         request.onload = reqOnload; 
         // 失敗就 reqError()
         request.onerror = reqError;
+ 
+        setTimeout(function(){
+            var request = new XMLHttpRequest(); 
+            // 定義連線方式
+            request.open('get', 'https://data.epa.gov.tw/api/v1/aqx_p_432?api_key=9be7b239-557b-4c10-9775-78cadfc555e9&limit=1000&format=json', true);
+            // 送出請求
+            request.send();
+            // 如果成功就執行 reqOnload()
+            request.onload = reqOnload; 
+            // 失敗就 reqError()
+            request.onerror = reqError;
+        }, 10000);
+        
     </script>
 </body>
 </html>

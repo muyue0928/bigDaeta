@@ -30,41 +30,42 @@
             </ul>
         </div>
     </nav>
+    <!--頭身分界-->
     <div>請先選擇縣市</div>
-    <select id="city">
-        <optgroup label="北部地區">
-            <option value="基隆市">基隆</option>
-            <option value="臺北市">台北</option>
-            <option value="新北市">新北</option>
-            <option value="桃園市">桃園</option>
-            <option value="新竹縣">新竹縣</option>
-            <option value="新竹市">新竹市</option>
-            <option value="宜蘭縣">宜蘭</option>
-        </optgroup>
-        <optgroup label="中部地區">
-            <option value="苗栗縣">苗栗</option>
-            <option value="臺中市">台中</option>
-            <option value="彰化縣">彰化</option>
-            <option value="南投縣">南投</option>
-            <option value="雲林縣">雲林</option>
-        </optgroup>
-        <optgroup label="南部地區">
-            <option value="嘉義縣">嘉義縣</option>
-            <option value="嘉義市">嘉義市</option>
-            <option value="臺南市">台南</option>
-            <option value="高雄市">高雄</option>
-            <option value="屏東縣">屏東</option>
-        </optgroup>
-        <optgroup label="東部地區">
-            <option value="花蓮縣">花蓮</option>
-            <option value="臺東縣">台東</option>
-        </optgroup>
-        <optgroup label="離島地區">
-            <option value="澎湖縣">澎湖</option>
-            <option value="金門縣">金門</option>
-            <option value="連江縣">連江</option>
-        </optgroup>
-    </select>
+        <select id="city">
+            <optgroup label="北部地區">
+                <option value="基隆市">基隆</option>
+                <option value="臺北市">台北</option>
+                <option value="新北市">新北</option>
+                <option value="桃園市">桃園</option>
+                <option value="新竹縣">新竹縣</option>
+                <option value="新竹市">新竹市</option>
+                <option value="宜蘭縣">宜蘭</option>
+            </optgroup>
+            <optgroup label="中部地區">
+                <option value="苗栗縣">苗栗</option>
+                <option value="臺中市">台中</option>
+                <option value="彰化縣">彰化</option>
+                <option value="南投縣">南投</option>
+                <option value="雲林縣">雲林</option>
+            </optgroup>
+            <optgroup label="南部地區">
+                <option value="嘉義縣">嘉義縣</option>
+                <option value="嘉義市">嘉義市</option>
+                <option value="臺南市">台南</option>
+                <option value="高雄市">高雄</option>
+                <option value="屏東縣">屏東</option>
+            </optgroup>
+            <optgroup label="東部地區">
+                <option value="花蓮縣">花蓮</option>
+                <option value="臺東縣">台東</option>
+            </optgroup>
+            <optgroup label="離島地區">
+                <option value="澎湖縣">澎湖</option>
+                <option value="金門縣">金門</option>
+                <option value="連江縣">連江</option>
+            </optgroup>
+        </select>
     <button onclick="staCheck()">確定縣市!</button>
     <div>
 
@@ -76,6 +77,7 @@
     <div id="result"></div>
     
     <script>
+        let flag = 0;
         let city = document.getElementById('city');
         let station = document.getElementById('station');
         let result = document.getElementById('result');
@@ -87,10 +89,15 @@
         function reqOnload () {
             const data = JSON.parse(this.responseText);
             let opt = '';
+            
             staVal = station.value;
             for(let i=0;i<84;i++){
                 if(data.records[i].County == city.value){
                     opt += '<option value="'+data.records[i].SiteName+'">'+data.records[i].SiteName+'</option>';
+                    if(flag == 0){
+                        flag++;
+                        staVal = data.records[i].SiteName;
+                    }
                 }
             }
             station.innerHTML = opt;
@@ -100,6 +107,7 @@
                     res = '測站所在縣市：'+data.records[i].County+'\n測站名稱：'+data.records[i].SiteName+'\n測站所測得AQI：'+data.records[i].AQI+'\n測站所在經度：'+data.records[i].Longitude+'\n測站所在緯度：'+data.records[i].Latitude+'\n\n'
                 }
             }
+            
             result.innerText = res;
         }
         function reqError (err) {
